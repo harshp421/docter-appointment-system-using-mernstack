@@ -17,7 +17,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "cpassword is require"],
   },
+  MobileNumber: {
+    type: String,
+    // required: [true, "Number  is require"],
+  },
   isAdmin: {
+    type: Boolean,
+    default: false,
+  },
+  isBlocked: {
     type: Boolean,
     default: false,
   },

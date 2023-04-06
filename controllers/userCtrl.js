@@ -42,6 +42,11 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
+    if (user.isBlocked === true) {
+      return res
+        .status(200)
+        .send({ message: "user is Blocked found", success: false });
+    }
     if (!user) {
       return res
         .status(200)
@@ -56,6 +61,7 @@ const loginController = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
+
     res.status(200).send({ message: "Login Success", success: true, token });
   } catch (error) {
     console.log(error);
@@ -73,8 +79,7 @@ const authController = async (req, res) => {
         message: "user not found",
         success: false,
       });
-    }
-    else {
+    } else {
       res.status(200).send({
         success: true,
         data: user,
@@ -93,13 +98,13 @@ const authController = async (req, res) => {
 // APpply DOctor CTRL
 const applyDoctorController = async (req, res) => {
   try {
-
-    console.log('call');
+    console.log("call");
     console.log(req.body);
     const newDoctor = await doctorModel(req.body, { status: "pending" });
-    ///   newDoctor._id=req.body.userId;
+    /** important */
+    newDoctor._id = req.body.userId;
     await newDoctor.save();
-    console.log('call end');
+    console.log("call end");
     const adminUser = await userModel.findOne({ isAdmin: true });
     const notifcation = adminUser.notifcation;
     notifcation.push({
@@ -110,7 +115,6 @@ const applyDoctorController = async (req, res) => {
         name: newDoctor.firstName + " " + newDoctor.lastName,
         onClickPath: "/admin/docotrs",
       },
-
     });
     await userModel.findByIdAndUpdate(adminUser._id, { notifcation });
 
@@ -216,7 +220,7 @@ const bookeAppointmnetController = async (req, res) => {
     res.status(200).send({
       success: true,
       message: "Appointment Book succesfully",
-      data:newAppointment
+      data: newAppointment,
     });
   } catch (error) {
     console.log(error);
@@ -270,7 +274,6 @@ const bookingAvailabilityController = async (req, res) => {
 
 const userAppointmentsController = async (req, res) => {
   try {
-
     console.log(req.body.userId);
     const appointments = await appointmentModel.find({
       userId: req.body.userId,
@@ -293,80 +296,69 @@ const userAppointmentsController = async (req, res) => {
 
 // Payment System start
 //Token Generation
-const braintreeTokenController = async (req,res) => {
+const braintreeTokenController = async (req, res) => {
   console.log("token for braitree");
 
   try {
     gateway.clientToken.generate({}, function (err, response) {
       if (err) {
         res.status(500).send(err);
-      }
-      else {
+      } else {
         res.send(response);
-       // console.log(response);
+        // console.log(response);
       }
-    })
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
-const braintreePaymentController = async (req,res) => {
-
-
+const braintreePaymentController = async (req, res) => {
   try {
-
-    const{nonce}=req.body;
+    const { nonce } = req.body;
     console.log(req.body);
-    console.log("fees"+req.body.doctor.feesPerCunsaltation);
-    console.log("id"+req.body.appointment._id);
-   
+    console.log("fees" + req.body.doctor.feesPerCunsaltation);
+    console.log("id" + req.body.appointment._id);
 
-    const isPaid=req.body.user.isPaid;
-    let newTrascction=gateway.transaction.sale(
+    const isPaid = req.body.user.isPaid;
+    let newTrascction = gateway.transaction.sale(
       {
-        amount:req.body.doctor.feesPerCunsaltation,
+        amount: req.body.doctor.feesPerCunsaltation,
         paymentMethodNonce: nonce,
         options: {
           submitForSettlement: true,
         },
       },
-      async function(error,result)
-      {
-          if(result)
-          {
-       //    appointmentModel.updateMany({userId:req.body.user._id},{$set:{isPaid:true}});
-         const updatedappointment= await appointmentModel.findByIdAndUpdate(
-                 userId=(req.body.appointment._id),
-                 {isPaid:true}
-             );
-            console.log('result'+updatedappointment);
-          res.send({msg:"Transection done Success full"})
-          }
-          else
-          {
-            res.status(500).send(error)
-          }
+      async function (error, result) {
+        if (result) {
+          //    appointmentModel.updateMany({userId:req.body.user._id},{$set:{isPaid:true}});
+          const updatedappointment = await appointmentModel.findByIdAndUpdate(
+            (userId = req.body.appointment._id),
+            { isPaid: true }
+          );
+          console.log("result" + updatedappointment);
+          res.send({ msg: "Transection done Success full" });
+        } else {
+          res.status(500).send(error);
+        }
       }
-      )
-
+    );
   } catch (error) {
     console.log(error);
   }
-}
+};
 //Payment
 
 const newsLetter = async (req, res) => {
   const { email } = req.body.user;
   console.log(req.body.user.email);
-  const user = await userModel.findOne({ email:email });
-    if (!user)
-    {
-      res.send("User not found with this email");
-    }
+  const user = await userModel.findOne({ email: email });
+  if (!user) {
+    res.send("User not found with this email");
+  }
   try {
-   
-    const resetURL = '<p>Click <a href="http://localhost:5000/api/user/reset-password/">here</a> to reset your password</p>';
+    const resetURL =
+      '<p>Click <a href="http://localhost:5000/api/user/reset-password/">here</a> to reset your password</p>';
     const data = {
       to: email,
       text: "Hey User",
@@ -374,7 +366,6 @@ const newsLetter = async (req, res) => {
       html: resetURL,
     };
     sendEmail(data);
-   
   } catch (error) {
     throw new Error(error);
   }
@@ -392,5 +383,5 @@ module.exports = {
   userAppointmentsController,
   braintreeTokenController,
   braintreePaymentController,
-  newsLetter
+  newsLetter,
 };

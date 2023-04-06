@@ -28,8 +28,10 @@ const uploadPhoto = multer({
 });
 
 const docterImgResize = async (req, res, next) => {
+  console.log("hrlo in image resixer");
+  console.log(req.body, "hello");
   if (!req.files) return next();
-  console.log(req.files);
+
   await Promise.all(
     req.files.map(async (file) => {
       await sharp(file.path)
@@ -43,5 +45,4 @@ const docterImgResize = async (req, res, next) => {
   next();
 };
 
-
-module.exports = { uploadPhoto,docterImgResize };
+module.exports = { uploadPhoto, docterImgResize };

@@ -7,18 +7,14 @@ const Doctors = () => {
   //getUsers
   const getDoctors = async () => {
     try {
-
       const res = await fetch("/api/v1/admin/getAllDoctors", {
         method: "GET",
-        headers:
-        {
+        headers: {
           "Content-type": "application/json",
-          Authorization: localStorage.getItem('token'),
-
-        },  
-      },
-      );
-      const data= await res.json();
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+      const data = await res.json();
       if (data.success) {
         setDoctors(data.data);
       }
@@ -30,7 +26,6 @@ const Doctors = () => {
   // handle account
   const handleAccountStatus = async (record, status) => {
     try {
-         
       // const res = await fetch("/api/v1/admin/getAllDoctors", {
       //   method: "GET",
       //   headers:
@@ -38,25 +33,21 @@ const Doctors = () => {
       //     "Content-type": "application/json",
       //     Authorization: localStorage.getItem('token'),
 
-      //   },  
+      //   },
       //   body:
       //   {
       //     doctorId: record._id,
-      //      userId: record.userId, status: status 
+      //      userId: record.userId, status: status
       //   }
       // },
       // );
 
-        
-      
-    
       const res = await axios.post(
         "/api/v1/admin/changeAccountStatus",
         { doctorId: record._id, userId: record.userId, status: status },
         {
-
           headers: {
-            Authorization: localStorage.getItem('token'),
+            Authorization: localStorage.getItem("token"),
           },
         }
       );
@@ -117,13 +108,12 @@ const Doctors = () => {
     //   <Table columns={columns} dataSource={doctors} />
     // </Layout>
     <>
-   <div className="home-wrapper-2">
-    <div className="container py-5 px-3">
-     <h1 className="text-center my-3">Docter List</h1>
-       <Table columns={columns} dataSource={doctors} key={doctors} />
-     </div>
-    </div>
-   
+      <div className="home-wrapper-2">
+        <div className="container py-5 px-3">
+          <h1 className="text-center my-3">Docter List</h1>
+          <Table columns={columns} dataSource={doctors} key={doctors} />
+        </div>
+      </div>
     </>
   );
 };

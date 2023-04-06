@@ -1,12 +1,11 @@
 const JWT = require("jsonwebtoken");
-const dotenv = require('dotenv')
+const dotenv = require("dotenv");
 dotenv.config();
 
 module.exports = async (req, res, next) => {
   try {
-    
     const token = await req.headers.authorization;
-    console.log("token:"+token);
+    console.log("token colled:" + token);
     JWT.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
         return res.status(200).send({
@@ -18,8 +17,7 @@ module.exports = async (req, res, next) => {
         next();
       }
     });
-  } 
-  catch (error) {
+  } catch (error) {
     console.log(error);
     res.status(401).send({
       message: "Auth Failed",

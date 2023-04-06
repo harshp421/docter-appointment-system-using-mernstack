@@ -1,6 +1,9 @@
 const express = require("express");
-const {uploadImages,deleteImages}=require('../controllers/uploadController')
-const {uploadPhoto,docterImgResize}=require('../middlewares/uploadImage')
+const {
+  uploadImages,
+  deleteImages,
+} = require("../controllers/uploadController");
+const { uploadPhoto, docterImgResize } = require("../middlewares/uploadImage");
 const {
   loginController,
   registerController,
@@ -14,13 +17,12 @@ const {
   userAppointmentsController,
   braintreeTokenController,
   braintreePaymentController,
-  newsLetter
+  newsLetter,
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 //router onject
 const router = express.Router();
-
 
 //routes
 //LOGIN || POST
@@ -49,11 +51,7 @@ router.post(
 );
 //get news letter
 
-
-
-
-
-router.post('/newsletter',authMiddleware,newsLetter);
+router.post("/newsletter", authMiddleware, newsLetter);
 
 //GET ALL DOC
 router.get("/getAllDoctors", authMiddleware, getAllDocotrsController);
@@ -71,11 +69,10 @@ router.post(
 //Appointments List
 router.get("/user-appointments", authMiddleware, userAppointmentsController);
 
-//brainttre token 
-router.get("/braintree/token",braintreeTokenController);
+//brainttre token
+router.get("/braintree/token", braintreeTokenController);
 //brain payment
 router.post("/braintree/payment", authMiddleware, braintreePaymentController);
-
 
 //POst image
 router.post(
@@ -87,6 +84,5 @@ router.post(
 );
 
 router.delete("/delete-img/:id", authMiddleware, deleteImages);
-
 
 module.exports = router;

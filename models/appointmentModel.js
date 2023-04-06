@@ -18,7 +18,7 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-     phone:{
+    phone: {
       type: String,
       required: true,
     },
@@ -47,14 +47,14 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    fees:{
+    fees: {
       type: Number,
       required: [true, "fee is required"],
     },
-    isPaid:{
+    isPaid: {
       type: Boolean,
-      default:false,
-    }
+      default: false,
+    },
   },
   { timestamps: true }
 );

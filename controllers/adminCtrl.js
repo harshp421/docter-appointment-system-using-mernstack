@@ -42,11 +42,11 @@ const changeAccountStatusController = async (req, res) => {
   try {
     console.log(req.body);
     console.log("in function");
-   
-    const { doctorId, status,userId } = req.body;
+
+    const { doctorId, status, userId } = req.body;
     const doctor = await doctorModel.findByIdAndUpdate(doctorId, { status });
     console.log(doctor);
-    const user = await userModel.findOne({ _id: doctor.userId});
+    const user = await userModel.findOne({ _id: doctor.userId });
     const notifcation = user.notifcation;
     notifcation.push({
       type: "doctor-account-request-updated",
@@ -70,8 +70,19 @@ const changeAccountStatusController = async (req, res) => {
   }
 };
 
+const blockUser = async (req, res) => {
+  try {
+    const name = req.body.name;
+    console.log(name);
+    res.send({ message: "hello" });
+  } catch (error) {
+    console.log("doute");
+  }
+};
+
 module.exports = {
   getAllDoctorsController,
   getAllUsersController,
   changeAccountStatusController,
+  blockUser,
 };

@@ -48,7 +48,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, "wrok timing is required"],
     },
-     etiming: {
+    etiming: {
       type: String,
       required: [true, "wrok timing is required"],
     },
@@ -58,6 +58,10 @@ const doctorSchema = new mongoose.Schema(
         url: String,
       },
     ],
+    introducing: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
