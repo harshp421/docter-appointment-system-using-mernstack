@@ -7,12 +7,15 @@ const moment = require("moment");
 var braintree = require("braintree");
 const sendEmail = require("./emailCrtl");
 const dotenv = require("dotenv").config();
+
+//payment gateway
 var gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.Merchant_ID,
   publicKey: process.env.Public_key,
   privateKey: process.env.Privet_key,
 });
+
 //register callback
 const registerController = async (req, res) => {
   try {
@@ -42,15 +45,15 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
-    if (user.isBlocked === true) {
-      return res
-        .status(200)
-        .send({ message: "user is Blocked found", success: false });
-    }
+
     if (!user) {
       return res
         .status(200)
         .send({ message: "user not found", success: false });
+    } else if (user.isBlocked === true) {
+      return res
+        .status(200)
+        .send({ message: "user is Blocked ", success: false });
     }
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
@@ -370,6 +373,69 @@ const newsLetter = async (req, res) => {
     throw new Error(error);
   }
 };
+
+const reviewToDoctar = async (req, res) => {
+  //take user id
+  const { _id } = req.user;
+  //get doctar is
+  const { star, docterId, comment } = req.body;
+
+  try {
+    const product = await doctorModel.findById(docterId);
+
+    let alreadyRated = product.ratings.find(
+      (userId) => userId.postedby.toString() === _id.toString()
+    );
+
+    if (alreadyRated) {
+      const updateRating = await doctorModel.updateOne(
+        {
+          ratings: { $elemMatch: alreadyRated },
+        },
+        {
+          $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+        },
+        {
+          new: true,
+        }
+      );
+    } else {
+      const rateProduct = await doctorModel.findByIdAndUpdate(
+        prodId,
+        {
+          $push: {
+            ratings: {
+              star: star,
+              comment: comment,
+              postedby: _id,
+            },
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
+    const getallratings = await doctorModel.findById(docterId);
+
+    let totalRating = getallratings.ratings.length;
+
+    let ratingsum = getallratings.ratings
+      .map((item) => item.star)
+      .reduce((prev, curr) => prev + curr, 0);
+    let actualRating = Math.round(ratingsum / totalRating);
+    let finalproduct = await doctorModel.findByIdAndUpdate(
+      docterId,
+      {
+        totalrating: actualRating,
+      },
+      { new: true }
+    );
+    res.json(finalproduct);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   loginController,
   registerController,
@@ -384,4 +450,5 @@ module.exports = {
   braintreeTokenController,
   braintreePaymentController,
   newsLetter,
+  reviewToDoctar,
 };

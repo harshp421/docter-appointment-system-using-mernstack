@@ -72,17 +72,57 @@ const changeAccountStatusController = async (req, res) => {
 
 const blockUser = async (req, res) => {
   try {
-    const name = req.body.name;
-    console.log(name);
-    res.send({ message: "hello" });
+    const user = req.body;
+    console.log("new user", req.body.data);
+    const newUser = await userModel.findByIdAndUpdate(req.body.data._id, {
+      isBlocked: true,
+    });
+    if (newUser) {
+      const users = await userModel.find({});
+      res
+        .status(200)
+        .send({ success: true, message: "User updated", data: users });
+    } else {
+      res.status(404).send({ message: "user Not Blocked Deleted" });
+    }
   } catch (error) {
-    console.log("doute");
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "error while block user",
+      error,
+    });
   }
 };
 
+const unblockUser = async (req, res) => {
+  try {
+    const user = req.body;
+    console.log("new user", req.body.data);
+    const newUser = await userModel.findByIdAndUpdate(req.body.data._id, {
+      isBlocked: false,
+    });
+    if (newUser) {
+      const users = await userModel.find({});
+      res
+        .status(200)
+        .send({ success: true, message: "User updated", data: users });
+    } else {
+      res.status(404).send({ message: "user Not Blocked Deleted" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "error while block user",
+      error,
+    });
+  }
+};
 module.exports = {
   getAllDoctorsController,
   getAllUsersController,
   changeAccountStatusController,
   blockUser,
+  unblockUser,
 };

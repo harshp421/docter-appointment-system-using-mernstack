@@ -4,6 +4,7 @@ const {
   getAllDoctorsController,
   changeAccountStatusController,
   blockUser,
+  unblockUser,
 } = require("../controllers/adminCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -24,4 +25,5 @@ router.post(
 
 //Block User
 router.post("/blockuser", authMiddleware, blockUser);
+router.post("/unblockuser", authMiddleware, unblockUser);
 module.exports = router;

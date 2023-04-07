@@ -2,23 +2,27 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import { message, Table } from "antd";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/features/userSlice";
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
-
+  const dispatch = useDispatch();
   const getAppointments = async () => {
     try {
-        const res = await axios.get("/api/v1/doctor/doctor-appointments", {
-         headers: {
-           Authorization: localStorage.getItem("token"),
-         },
-        });
+      const res = await axios.get("/api/v1/doctor/doctor-appointments", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      });
       if (res.data.success) {
         setAppointments(res.data.data);
       }
     } catch (error) {
       console.log(error);
-    }};
+    }
+  };
 
   useEffect(() => {
     getAppointments();
@@ -36,12 +40,16 @@ const DoctorAppointments = () => {
         }
       );
       if (res.data.success) {
-        message.success(res.data.message);
+        toast.success(res.data.message);
+        console.log(res.data.data, "updated data");
+
+        dispatch(setUser(res.data.data));
+
         getAppointments();
       }
     } catch (error) {
       console.log(error);
-      message.error("Something Went Wrong");
+      toast.error("Something Went Wrong");
     }
   };
 
@@ -53,11 +61,7 @@ const DoctorAppointments = () => {
     {
       title: "User Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <span>
-         {record.userName}
-        </span>
-      ),
+      render: (text, record) => <span>{record.userName}</span>,
     },
     {
       title: "User Email",
@@ -74,11 +78,12 @@ const DoctorAppointments = () => {
         </span>
       ),
     },
-    { 
+    {
       title: "Is Paid",
       dataIndex: "isPaid",
-      render: (text, record) => <span> {(record.isPaid==true)?"yes":"no"} </span>,
-    
+      render: (text, record) => (
+        <span> {record.isPaid == true ? "yes" : "no"} </span>
+      ),
     },
     {
       title: "Status",
@@ -111,12 +116,11 @@ const DoctorAppointments = () => {
   ];
   return (
     <>
-    {console.log(appointments)}
+      {console.log(appointments)}
       <div className="container home-wrapper-2 my-5 py-5 px-3">
         <h1 className="text-center">Appoinmtnets Lists</h1>
         <Table columns={columns} dataSource={appointments} />
       </div>
-
     </>
   );
 };

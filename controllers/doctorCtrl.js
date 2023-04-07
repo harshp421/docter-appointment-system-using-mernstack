@@ -81,14 +81,17 @@ const doctorAppointmentsController = async (req, res) => {
   }
 };
 
+//update status
 const updateStatusController = async (req, res) => {
   try {
     const { appointmentsId, status } = req.body;
     const appointments = await appointmentModel.findByIdAndUpdate(
       appointmentsId,
-      { status } 
+      { status }
     );
+    console.log(appointments, "all appointment");
     const user = await userModel.findOne({ _id: appointments.userId });
+    console.log(user, "user appointment");
     const notifcation = user.notifcation;
     notifcation.push({
       type: "status-updated",
@@ -96,9 +99,11 @@ const updateStatusController = async (req, res) => {
       onCLickPath: "/doctor-appointments",
     });
     await user.save();
+    console.log(user, "all appointment");
     res.status(200).send({
       success: true,
       message: "Appointment Status Updated",
+      data: user,
     });
   } catch (error) {
     console.log(error);

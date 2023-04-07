@@ -18,6 +18,7 @@ const {
   braintreeTokenController,
   braintreePaymentController,
   newsLetter,
+  reviewToDoctar,
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -74,6 +75,8 @@ router.get("/braintree/token", braintreeTokenController);
 //brain payment
 router.post("/braintree/payment", authMiddleware, braintreePaymentController);
 
+//Post Review
+router.post("/review", authMiddleware, reviewToDoctar);
 //POst image
 router.post(
   "/uploadimage",

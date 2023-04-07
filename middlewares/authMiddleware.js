@@ -5,7 +5,7 @@ dotenv.config();
 module.exports = async (req, res, next) => {
   try {
     const token = await req.headers.authorization;
-    console.log("token colled:" + token);
+    console.log("token colled:" + req.body);
     JWT.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
         return res.status(200).send({

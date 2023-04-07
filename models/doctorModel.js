@@ -62,6 +62,13 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    ratings: [
+      {
+        star: Number,
+        comment: String,
+        postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
   },
   { timestamps: true }
 );

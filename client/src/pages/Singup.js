@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { message } from "antd";
 import { useFormik } from "formik";
+import { toast } from "react-toastify";
 var data = {};
 const Signup = () => {
   const navigate = useNavigate();
@@ -18,13 +19,21 @@ const Signup = () => {
     password: "",
     cpassword: "",
   });
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   let signupSchema = yup.object({
     name: yup.string().required("**First name is required "),
     email: yup.string().required("**email is required"),
-    MobileNumber: yup.string().required("**mobile number is required"),
+    MobileNumber: yup
+      .string()
+      .matches(phoneRegExp, "Phone number is not valid"),
     password: yup.string().required("**Password is required "),
-    cpassword: yup.string().required("**Password is required "),
+    cpassword: yup
+      .string()
+      .label("confirm password")
+      .required()
+      .oneOf([yup.ref("password"), null], "Passwords must match"),
   });
   const formik = useFormik({
     initialValues: {
@@ -66,7 +75,7 @@ const Signup = () => {
       dispatch(hideLoading());
 
       if (data.success) {
-        message.success("Register Successfully!");
+        toast.success("Register Successfully!");
         navigate("/login");
       } else {
         message.error(res.data.message);
