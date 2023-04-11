@@ -79,7 +79,7 @@ const Appointments = () => {
   return (
     <div className="home-wrapper-2 container my-5">
       <h1 className="text-center py-3">Appoinmtnets Lists</h1>
-      <Table columns={columns} dataSource={appointments} />
+      <Table sortDirections={'descend'} columns={columns} dataSource={appointments} />
     </div>
   );
 };

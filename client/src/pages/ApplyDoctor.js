@@ -53,6 +53,7 @@ const ApplyDoctor = () => {
     lastName: yup.string().required("**First name is required "),
     phone: yup.string().required("**mobile number is required"),
     email: yup.string().required("**email is required"),
+    
     address: yup.string().required("**address is required"),
     specialization: yup.string().required("**specialization is required"),
     experience: yup.string().required("**experiance is required"),
@@ -76,6 +77,7 @@ const ApplyDoctor = () => {
       stiming: "",
       etiming: "",
       introducing: "",
+      images:""
     },
     validationSchema: signupSchema,
     onSubmit: (values) => {
@@ -404,7 +406,37 @@ const ApplyDoctor = () => {
             </div>
 
             <div>
-              <Dropzone onDrop={(acceptedFile) => uploadImg(acceptedFile)}>
+
+
+
+
+            <div className="row py-2">
+              <div class="col">
+                <div class="form-outline">
+                  <input
+                    type="text"
+                    id="form8Example5"
+                    name="images"
+                    class="form-control"
+                    value={formik.values.images}
+                    onChange={formik.handleChange("images")}
+                    onBlur={formik.handleBlur("images")}
+                  />
+                  <label class="form-label" for="form8Example5">
+                    images
+                  </label>
+                </div>
+               
+              </div>
+
+           
+
+             
+            </div>
+
+
+
+              {/* <Dropzone onDrop={(acceptedFile) => uploadImg(acceptedFile)}>
                 {({ getRootProps, getInputProps }) => (
                   <div {...getRootProps()}>
                     <input {...getInputProps()} />
@@ -413,7 +445,7 @@ const ApplyDoctor = () => {
                     </p>
                   </div>
                 )}
-              </Dropzone>
+              </Dropzone> */}
             </div>
             <button type="submit" className="btn btn-primary">
               Submit

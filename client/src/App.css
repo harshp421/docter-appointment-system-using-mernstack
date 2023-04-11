@@ -26,7 +26,16 @@ body {
     font-size: 15px;
     transition: 1s;
 }
-
+.active  {
+    background-color: #00a786;
+    color: white;
+    border-radius: 10px;
+}
+.active p{
+   
+   
+    color: white;
+}
 .title {
     color: var(--color-00a786);
 }

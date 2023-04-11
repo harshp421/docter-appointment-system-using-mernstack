@@ -52,12 +52,12 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, "wrok timing is required"],
     },
-    images: [
+    images: 
       {
-        public_id: String,
-        url: String,
+     type: String,
+       
       },
-    ],
+    
     introducing: {
       type: String,
       required: true,

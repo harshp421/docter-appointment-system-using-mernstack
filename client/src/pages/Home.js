@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import avtar from '../img/noDocter.webp'
 import docter from "../img/doctor.jpg";
 import docter1 from "../img/doctor-01.jpg";
 import docter2 from "../img/doctor-02.jpg";
@@ -18,6 +18,33 @@ const Home = () => {
 
   const { user } = useSelector((state) => state?.user);
   //login userdata
+
+
+  const [doctors, setDoctors] = useState([]);
+  const getDocter = async () => {
+    try {
+      const res = await fetch("/api/v1/user/getAllDoctors", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+
+      const data = await res.json();
+      console.log(doctors);
+      if (data.success) {
+        setDoctors(data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getDocter();
+  }, []);
+
 
   useEffect(() => {
     dispatch(setUser(user));
@@ -266,12 +293,13 @@ const Home = () => {
                 plugins.
               </p>
               <div className="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-                <button
-                  type="button"
+              <Link
+                  
+                  to={'/blog/:id'}
                   className="btn btn-primary btn-lg px-4 me-sm-3"
                 >
-                  Read More...
-                </button>
+                  Read More ...
+                </Link>
               </div>
             </div>
             <div className="overflow-hidden col-lg-6">
@@ -314,18 +342,23 @@ const Home = () => {
                 plugins.
               </p>
               <div className="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-                <button
-                  type="button"
+                <Link
+                  
+                  to={'/blog/:id'}
                   className="btn btn-primary btn-lg px-4 me-sm-3"
                 >
                   Read More ...
-                </button>
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
       {/* What we offer section   1*/}
+
+
+
+
       <section className="home-wrapper-2">
         <div className="container">
           <div className="row px-4 py-5 text-center ">
@@ -339,12 +372,13 @@ const Home = () => {
                 plugins.
               </p>
               <div className="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-                <button
-                  type="button"
+              <Link
+                  
+                  to={'/blog/:id'}
                   className="btn btn-primary btn-lg px-4 me-sm-3"
                 >
-                  Read More...
-                </button>
+                  Read More ...
+                </Link>
               </div>
             </div>
 
@@ -364,179 +398,85 @@ const Home = () => {
 
       {/* our Docter Section */}
       <section
-        className="container
-      
-       py-5 px-5"
+        className="container  py-5 px-5"
       >
-        <div className="containar">
-          <div className="section-header text-center">
-            <h1>
-              Our <span className="title">Docter</span>{" "}
-            </h1>
-            <p className="sub-heading1">
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-              accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-              quae ab illo inve ntore veritatis et quasi architecto beatae vitae
-            </p>
+
+<h1 className="text-center">
+            Our <span className="title">Docter</span>{" "}
+          </h1>
+           <div className="row docter-wrapper d-flex justify-content-center">
+            {doctors &&
+              doctors?.map((doctor,index) => {
+                if(index<3)
+                {
+                  return (
+                    <div className="col-12 col-md-4 col-lg-4 my-2">
+                      <div className="profile-widget">
+                        <div className="doc-img w-75 mx-auto">
+                          <a href="#">
+                          <img className="img-fluid" alt="User" src={(doctor.images)?doctor?.images:avtar} />
+                        
+                          </a>
+                        </div>
+  
+                        <div className="pro-content">
+                          <h3 className="title">
+                            {doctor?.firstName} {doctor?.lastName}
+                          </h3>
+                          <p className="speciality">{doctor?.specialization}</p>
+                          <div className="rating ">
+                           
+                          </div>
+                          <ul className="available-info">
+                            <li>
+                              <i className="fas fa-map-marker-alt px-2"></i>{" "}
+                              {doctor?.address}
+                            </li>
+                            <li>
+                              <i className="fas fa-calendar-check px-2"></i>{" "}
+                              Available on Mon to set
+                              {doctor?.stiming} to {doctor?.etiming}
+                            </li>
+                            <li>
+                              <i className="fas fa-calendar-check px-2"></i>
+                              Experience: {doctor?.experience}
+                            </li>
+  
+                            <li>
+                              <i className="fas fa-wallet px-2"></i> ₹
+                              {doctor?.feesPerCunsaltation}
+                            </li>
+                          </ul>
+  
+                          <div className="row row-sm">
+                            <div className="row">
+                              <div className="col-6">
+                                <Link
+                                  className="btn view-btn"
+                                  to={`/doctor/view-profile/${doctor._id}`}
+                                >
+                                  View Profile
+                                </Link>
+                              </div>
+  
+                              <div className="col-6">
+                                <Link
+                                  className="btn view-btn"
+                                  to={`/doctor/book-appointment/${doctor?._id}`}
+                                >
+                                  Appointment
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+               
+              })}
           </div>
-
-          <div className="row docter-wrapper d-flex justify-content-center">
-            <div class="col-12 col-md-4 col-lg-4 my-2">
-              <div class="profile-widget">
-                <div class="doc-img w-100">
-                  <a href="">
-                    <img class="img-fluid" alt="User" src={docter} />
-                  </a>
-                </div>
-
-                <div class="pro-content">
-                  <h3 class="title">Karyen New</h3>
-                  <p class="speciality">BPT - Senior Accupuncture</p>
-                  <div class="rating ">
-                    <span class="d-inline-block average-rating mb-0 ">
-                      (23)
-                    </span>
-                  </div>
-                  <ul class="available-info">
-                    <li>
-                      <i class="fas fa-map-marker-alt"></i> Newyork, USA
-                    </li>
-                    <li>
-                      <i class="fas fa-calendar-check"></i> Available on Mon, 22
-                      Sep
-                    </li>
-                    <li>
-                      <i class="fas fa-wallet"></i> $150 - $220
-                    </li>
-                  </ul>
-                  <div class="row row-sm">
-                    <div className="row">
-                      <div class="col-6">
-                        <a
-                          class="btn view-btn"
-                          href="/template-physiotheraphy/patient/doctor-profile"
-                        >
-                          View Profile
-                        </a>
-                      </div>
-                      <div class="col-6">
-                        <a
-                          class="btn view-btn"
-                          href="/template-physiotheraphy/patient/booking"
-                        >
-                          Book Now
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12 col-md-4 col-lg-4 my-2">
-              <div class="profile-widget">
-                <div class="doc-img">
-                  <a href="">
-                    <img class="img-fluid" alt="User " src={docter1} />
-                  </a>
-                </div>
-
-                <div class="pro-content">
-                  <h3 class="title">Karyen New</h3>
-                  <p class="speciality">BPT - Senior Accupuncture</p>
-                  <div class="rating ">
-                    <span class="d-inline-block average-rating mb-0 ">
-                      (23)
-                    </span>
-                  </div>
-                  <ul class="available-info">
-                    <li>
-                      <i class="fas fa-map-marker-alt"></i> Newyork, USA
-                    </li>
-                    <li>
-                      <i class="fas fa-calendar-check"></i> Available on Mon, 22
-                      Sep
-                    </li>
-                    <li>
-                      <i class="fas fa-wallet"></i> $150 - $220
-                    </li>
-                  </ul>
-                  <div class="row row-sm">
-                    <div className="row">
-                      <div class="col-6">
-                        <a
-                          class="btn view-btn"
-                          href="/template-physiotheraphy/patient/doctor-profile"
-                        >
-                          View Profile
-                        </a>
-                      </div>
-                      <div class="col-6">
-                        <a
-                          class="btn view-btn"
-                          href="/template-physiotheraphy/patient/booking"
-                        >
-                          Book Now
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4 my-2">
-              <div class="profile-widget">
-                <div class="doc-img">
-                  <a href="">
-                    <img class="img-fluid" alt="User " src={docter2} />
-                  </a>
-                </div>
-
-                <div class="pro-content">
-                  <h3 class="title">Karyen New</h3>
-                  <p class="speciality">BPT - Senior Accupuncture</p>
-                  <div class="rating ">
-                    <span class="d-inline-block average-rating mb-0 ">
-                      (23)
-                    </span>
-                  </div>
-                  <ul class="available-info">
-                    <li>
-                      <i class="fas fa-map-marker-alt"></i> Newyork, USA
-                    </li>
-                    <li>
-                      <i class="fas fa-calendar-check"></i> Available on Mon, 22
-                      Sep
-                    </li>
-                    <li>
-                      <i class="fas fa-wallet"></i> $150 - $220
-                    </li>
-                  </ul>
-                  <div class="row row-sm">
-                    <div className="row">
-                      <div class="col-6">
-                        <a
-                          class="btn view-btn"
-                          href="/template-physiotheraphy/patient/doctor-profile"
-                        >
-                          View Profile
-                        </a>
-                      </div>
-                      <div class="col-6">
-                        <a
-                          class="btn view-btn"
-                          href="/template-physiotheraphy/patient/booking"
-                        >
-                          Book Now
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* connect us form */}

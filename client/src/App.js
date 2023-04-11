@@ -24,6 +24,7 @@ import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import Adminprofile from "./pages/admin/Profile";
 import Single_Doctor from "./pages/Single_Doctor";
 import ThanksPage from "./pages/ThanksPage";
+import Blog from "./pages/Blog";
 
 const App = () => {
   const { loading } = useSelector((state) => state.alerts);
@@ -84,6 +85,16 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+             <Route
+              path="/blog/:id"
+              index
+              element={
+                <ProtectedRoute>
+                  <Blog />
+                </ProtectedRoute>
+              }
+            />
+
 
             <Route
               path="/admin/doctors"

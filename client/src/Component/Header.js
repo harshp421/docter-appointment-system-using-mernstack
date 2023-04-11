@@ -104,7 +104,11 @@ const Header = () => {
                 </>
               );
             })}
+          
 
+             
+            
+             
             {user?._id && (
               <li className="nav-item">
                 <Link
@@ -116,7 +120,12 @@ const Header = () => {
                 </Link>
               </li>
             )}
+         
 
+           <li className="nav-link active">
+             <p className="my-0">{user?.name}</p>
+            </li>
+         
             <li className="nav-link-content ">
               <Badge count={user?.notifcation?.length}>
                 <Link to="/notification" class=" nav-link link-dark px-2">

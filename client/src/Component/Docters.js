@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import docter from "../img/doctor.jpg";
-
+import avtar from '../img/noDocter.webp'
 import ReactStars from "react-rating-stars-component";
 import { Link } from "react-router-dom";
 const Docters = () => {
@@ -16,9 +16,10 @@ const Docters = () => {
       });
 
       const data = await res.json();
-      console.log(doctors);
+     
       if (data.success) {
         setDoctors(data.data);
+       
       }
     } catch (error) {
       console.log(error);
@@ -31,6 +32,7 @@ const Docters = () => {
 
   return (
     <>
+    { console.log(doctors,"docters")}
       <section className="section section-profile py-5 px-5">
         <div className="container">
           <h1 className="text-center">
@@ -43,10 +45,10 @@ const Docters = () => {
                 return (
                   <div className="col-12 col-md-4 col-lg-4 my-2">
                     <div className="profile-widget">
-                      <div className="doc-img w-100">
-                        <a href="#">
-                          <img className="img-fluid" alt="User" src={docter} />
-                        </a>
+                      <div className="doc-img w-75 mx-auto">
+                        
+                          <img className="img-fluid" alt="User" src={(doctor.images)?doctor?.images:avtar} />
+                        
                       </div>
 
                       <div className="pro-content">
@@ -55,14 +57,7 @@ const Docters = () => {
                         </h3>
                         <p className="speciality">{doctor.specialization}</p>
                         <div className="rating ">
-                          <ReactStars
-                            count={5}
-                            size={24}
-                            activeColor="#ffd700"
-                          />
-                          <span className="d-inline-block average-rating mb-0 ">
-                            (23)
-                          </span>
+                         
                         </div>
                         <ul className="available-info">
                           <li>

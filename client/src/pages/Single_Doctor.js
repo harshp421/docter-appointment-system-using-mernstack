@@ -5,8 +5,9 @@ import docter from "../img/doctor.jpg";
 import Container from "../Component/Container";
 import { useFormik } from "formik";
 //import { showLoading, hideLoading } from "../../redux/features/alertSlice";
-
+import avtar from '../img/noDocter.webp'
 import * as yup from 'yup'
+import { toast } from "react-toastify";
 var data={};
 const Single_Doctor = () => {
   // const { user } = useSelector((state) => state.user);
@@ -53,6 +54,10 @@ const Single_Doctor = () => {
          
       })
       const data1=await res.json();
+      if(data1)
+      {
+        toast.success("Review Added Succes")
+      }
        console.log(data1,"review reture");
        setDoctor(data1);
   }
@@ -106,8 +111,17 @@ const getUserData = async () => {
           <div class="row">
             <div class="col-lg-4 col-md-6">
               <div class="doctor-img-block">
-                <img src={docter} alt="" class="img-fluid w-100" />
-
+                
+                {
+                (doctor?.images) ?(
+                  <img className="img-fluid" alt="User" src={doctor?.images} />
+                ):(
+                  <img className="img-fluid" alt="User" src={avtar} />
+                ) 
+                }
+              
+               
+                        
                 <div class="info-block mt-4">
                   <h4 class="mb-0">{doctor?.firstName}</h4>
                   <p>{doctor?.specialization}</p>
