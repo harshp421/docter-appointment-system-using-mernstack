@@ -3,16 +3,63 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import docter from "../img/doctor.jpg";
 import Container from "../Component/Container";
+import { useFormik } from "formik";
 //import { showLoading, hideLoading } from "../../redux/features/alertSlice";
 
+import * as yup from 'yup'
+var data={};
 const Single_Doctor = () => {
   // const { user } = useSelector((state) => state.user);
+
   const [doctor, setDoctor] = useState(null);
+
   // const dispatch = useDispatch();
   // const navigate = useNavigate();
+
   const params = useParams();
 
-  const getUserData = async () => {
+  let signupSchema = yup.object({
+    review: yup.string().required("**Review is required"),
+    
+  });
+  const formik = useFormik({
+    initialValues: {
+    review:""
+    },
+    validationSchema: signupSchema,
+    onSubmit: (values) => {
+      data = values;
+      console.log(data);
+      submitreview(data);
+    },
+  });
+
+
+/** review submit */
+
+  const submitreview =async(data)=>{
+      console.log(data);
+      const res=await fetch('/api/v1/user/review',{
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+        body: JSON.stringify({
+           star:5,
+           docterId: params.doctorId,
+           comment:data.review
+          }),
+         
+      })
+      const data1=await res.json();
+       console.log(data1,"review reture");
+       setDoctor(data1);
+  }
+
+
+/** get docter data */
+const getUserData = async () => {
     try {
       const res = await fetch("/api/v1/doctor/getDoctorById", {
         method: "POST",
@@ -222,7 +269,7 @@ const Single_Doctor = () => {
                       edit={false}
                       activeColor="#ffd700"
                     /> */}
-                    <p className="mb-0">Based on 2 Reviews</p>
+                    <p className="mb-0">Based on {doctor?.ratings?.length} Reviews</p>
                   </div>
                 </div>
 
@@ -234,7 +281,7 @@ const Single_Doctor = () => {
               </div>
               <div className="review-form py-4">
                 <h4>Write a Review</h4>
-                <form action="" className="d-flex flex-column gap-15">
+                <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-15">
                   <div>
                     {/* <ReactStars
                       count={5}
@@ -246,13 +293,18 @@ const Single_Doctor = () => {
                   </div>
                   <div>
                     <textarea
-                      name=""
-                      id=""
+                      name="review"
                       className="w-100 form-control"
                       cols="30"
                       rows="4"
                       placeholder="Comments"
+                      value={formik.values.review}
+                      onChange={formik.handleChange("review")}
+                      onBlur={formik.handleBlur("review")}
                     ></textarea>
+                     <div className="error">
+                    {formik.touched.review && formik.errors.review}
+                  </div>
                   </div>
                   <div className="d-flex justify-content-end">
                     <button className="btn btn-primary " type="submit">
@@ -263,28 +315,30 @@ const Single_Doctor = () => {
               </div>
               <div className="reviews mt-4">
                 <div className="review">
-                  <div className="d-flex gap-10 align-items-center">
-                    <h6 className="mb-0">Disha</h6>
-                    {/* <ReactStars
-                      count={5}
-                      size={24}
-                      value={4}
-                      edit={false}
-                      activeColor="#ffd700"
-                    /> */}
+                  <div className="d-flex gap-10 flex-column align-items-center">
+                 
+                 {
+                  doctor?.ratings?.map((rating)=>{
+                    return(
+                      <>
+                       <h6 className="mb-0 text-start">{(rating?.user)?
+                       rating?.user:rating.postedby }</h6>
+                       <p className="mt-3">
+                       {
+                        rating?.comment
+                      }
+                      </p> 
+                      </>
+                    )
+                  })
+                 }
                   </div>
-                  <p className="mt-3">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Consectetur fugit ut excepturi quos. Id reprehenderit
-                    voluptatem placeat consequatur suscipit ex. Accusamus dolore
-                    quisquam deserunt voluptate, sit magni perspiciatis quas
-                    iste?
-                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
+    
       </Container>
     </>
   );

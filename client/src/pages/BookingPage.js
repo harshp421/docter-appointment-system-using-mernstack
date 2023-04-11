@@ -6,6 +6,7 @@ import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import {setAppointment} from '../redux/features/appointmentSlice'
+import { toast } from "react-toastify";
 
 const BookingPage = () => {
   const { user } = useSelector((state) => state.user);
@@ -13,10 +14,11 @@ const BookingPage = () => {
   const params = useParams();
   const [doctors, setDoctors] = useState([]);
   const [date, setDate] = useState("");
-  const [time, setTime] = useState();
+  const [time, setTime] = useState("");
   const [isAvailable, setIsAvailable] = useState(false)
   const dispatch = useDispatch();
   const navigate=useNavigate();
+
   // login user data
   const getUserData = async () => {
     try {
@@ -42,10 +44,17 @@ const BookingPage = () => {
     }
 
   };
+  
   // ============ handle availiblity
   const handleAvailability = async () => {
     try {
-      dispatch(showLoading());
+  //    dispatch(showLoading());
+      if(date === "" || time === "")
+      {
+        toast.success("Please Select data or time");
+        return;
+      }  
+
       const res = await axios.post(
         "/api/v1/user/booking-availbility",
         { doctorId: params.doctorId, date, time },
@@ -55,24 +64,35 @@ const BookingPage = () => {
           },
         }
       );
-      dispatch(hideLoading());
+    //  dispatch(hideLoading());
       if (res.data.success) {
-        setIsAvailable(true);
-        message.success(res.data.message);
+           console.log(res.status);
+           if(res.status === 200)
+           {
+            setIsAvailable(true);
+           }
+           else
+           {
+            setIsAvailable(false)
+           }
+        
+          toast.success(res.data.message);
       } else {
-        message.error(res.data.message);
+        toast.error(res.data.message);
       }
     } catch (error) {
-      dispatch(hideLoading());
+      //dispatch(hideLoading());
       console.log(error);
     }
   };
+  
+  
   // =============== booking func
   const handleBooking = async () => {
     try {
       setIsAvailable(true);
       if (!date && !time) {
-        return alert("Date & Time Required");
+        return   toast.error("Date & Time Required");
       }
       dispatch(showLoading());
       const res = await axios.post(
@@ -102,7 +122,7 @@ const BookingPage = () => {
         console.log(res.data);
         dispatch(setAppointment(res.data.data))
 
-        message.success(res.data.message);
+          toast.success(res.data.message);
         navigate(`/conform/${params.doctorId}`)
       }
     } catch (error) {
@@ -115,6 +135,8 @@ const BookingPage = () => {
     getUserData();
     //eslint-disable-next-line
   }, []);
+
+
   return (
     <div className="container home-wrapper-2 px-4 py-5 align-items-center">
       <h3 className="text-center">Booking Page</h3>
@@ -131,20 +153,22 @@ const BookingPage = () => {
               {doctors.etiming}{"PM"}
             </h4>
             <div className="d-flex flex-column w-50">
+              
               <DatePicker
                 aria-required={"true"}
                 className="m-2"
-               
                 format="DD-MM-YYYY"
+          
                 onChange={(value) => {
-                 
                   setDate(moment(value).format("DD-MM-YYYY"));
                 }}
               />
+
               <TimePicker
                 aria-required={"true"}
                 format="HH:mm"
                 className="mt-3"
+                
                 onChange={(value) => { 
                   setTime(moment(value).format("HH:mm"));
                 }}
@@ -160,7 +184,7 @@ const BookingPage = () => {
                 Book Now
               </button> */}
 
-              {!isAvailable &&(
+              {isAvailable &&(
                     <button className="btn btn-dark mt-2" onClick={handleBooking}>
                     Book Now
                   </button>

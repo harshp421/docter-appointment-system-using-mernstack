@@ -456,3 +456,12 @@ h4 {
     font-size: 14px;
     color: var(--color-777777);
 }
+.review h6,p{
+     width: 100%;
+}
+.review p
+{
+    padding: 15px;
+    border-radius: 12px;
+    background-color: var(--color-f5f5f7);
+}

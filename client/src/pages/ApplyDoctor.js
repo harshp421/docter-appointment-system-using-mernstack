@@ -26,6 +26,28 @@ const ApplyDoctor = () => {
     introducing: "",
   });
 
+  const uploadImg=async(imgdata)=>{
+    console.log(imgdata,"img data");
+    const formData = new FormData();
+    for (let i = 0; i < data.length; i++) {
+      formData.append("images", data[i]);
+    }
+    console.log(formData,"formDat");
+  
+    const res = await fetch("/api/v1/user/uploadimage", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+         ...imgdata
+      }),
+
+    });
+     console.log(res,"respponcs");
+  }
+
   let signupSchema = yup.object({
     firstName: yup.string().required("**First name is required "),
     lastName: yup.string().required("**First name is required "),
@@ -44,7 +66,7 @@ const ApplyDoctor = () => {
     initialValues: {
       firstName: "",
       lastName: "",
-      phone: "",
+      phone: "",  
       email: "",
       website: "",
       address: "",
@@ -382,7 +404,7 @@ const ApplyDoctor = () => {
             </div>
 
             <div>
-              {/* <Dropzone onDrop={(acceptedFile) => uploadImg(acceptedFile)}>
+              <Dropzone onDrop={(acceptedFile) => uploadImg(acceptedFile)}>
                 {({ getRootProps, getInputProps }) => (
                   <div {...getRootProps()}>
                     <input {...getInputProps()} />
@@ -391,7 +413,7 @@ const ApplyDoctor = () => {
                     </p>
                   </div>
                 )}
-              </Dropzone> */}
+              </Dropzone>
             </div>
             <button type="submit" className="btn btn-primary">
               Submit

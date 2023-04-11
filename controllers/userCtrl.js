@@ -213,7 +213,8 @@ const bookeAppointmnetController = async (req, res) => {
     console.log(req.body);
     const newAppointment = new appointmentModel(req.body);
     await newAppointment.save();
-    const user = await userModel.findOne({ _id: req.body.doctorInfo.userId });
+    //improver from here
+    const user = await userModel.findOne({ _id: req.body.doctorId });
     user.notifcation.push({
       type: "New-appointment-request",
       message: `A new Appointment Request from ${req.body.userInfo.name}`,
@@ -253,7 +254,7 @@ const bookingAvailabilityController = async (req, res) => {
       },
     });
     if (appointments.length > 0) {
-      return res.status(200).send({
+      return res.status(201).send({
         message: "Appointments not Availibale at this time",
         success: true,
       });
@@ -274,7 +275,6 @@ const bookingAvailabilityController = async (req, res) => {
 };
 
 //user appoint Controller
-
 const userAppointmentsController = async (req, res) => {
   try {
     console.log(req.body.userId);
@@ -296,6 +296,7 @@ const userAppointmentsController = async (req, res) => {
     });
   }
 };
+
 
 // Payment System start
 //Token Generation
@@ -374,17 +375,22 @@ const newsLetter = async (req, res) => {
   }
 };
 
+
+
+//git review to docter
 const reviewToDoctar = async (req, res) => {
+  console.log(req.body);
   //take user id
-  const { _id } = req.user;
+  const { userId } = req.body;
   //get doctar is
   const { star, docterId, comment } = req.body;
+  console.log(star,docterId,comment,"comment");
 
   try {
     const product = await doctorModel.findById(docterId);
-
+    const user=await userModel.findById(userId);
     let alreadyRated = product.ratings.find(
-      (userId) => userId.postedby.toString() === _id.toString()
+      (userId) => userId.postedby.toString() === userId.toString()
     );
 
     if (alreadyRated) {
@@ -393,7 +399,7 @@ const reviewToDoctar = async (req, res) => {
           ratings: { $elemMatch: alreadyRated },
         },
         {
-          $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+          $set: { "ratings.$.star": star, "ratings.$.comment": comment ,"ratings.$.name":user.name},
         },
         {
           new: true,
@@ -401,13 +407,14 @@ const reviewToDoctar = async (req, res) => {
       );
     } else {
       const rateProduct = await doctorModel.findByIdAndUpdate(
-        prodId,
+        docterId,
         {
           $push: {
             ratings: {
               star: star,
               comment: comment,
-              postedby: _id,
+              postedby: userId,
+              user:user.name,
             },
           },
         },
@@ -431,6 +438,7 @@ const reviewToDoctar = async (req, res) => {
       },
       { new: true }
     );
+    console.log("final Product",finalproduct);
     res.json(finalproduct);
   } catch (error) {
     throw new Error(error);

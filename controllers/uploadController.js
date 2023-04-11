@@ -12,7 +12,7 @@ const uploadImages = asyncHandler(async (req, res) => {
 
     const urls = [];
     const files = req.files;
-    console.log(files, "new path");
+    console.log(files, "new path fils");
     for (const file of files) {
       const { path } = file;
 

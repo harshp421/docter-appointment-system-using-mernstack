@@ -11,7 +11,7 @@ const cloudinaryUploadImg = async (fileToUploads) => {
     process.env.CLOUD_NAME,
     process.env.API_KEY,
     process.env.SECRET_KEY,
-    "helo"
+    "helooo"
   );
 
   return new Promise((resolve) => {
