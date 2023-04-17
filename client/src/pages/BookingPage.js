@@ -20,6 +20,8 @@ const BookingPage = () => {
   const navigate=useNavigate();
 
   // login user data
+
+ 
   const getUserData = async () => {
     try {
       
@@ -158,7 +160,10 @@ const BookingPage = () => {
                 aria-required={"true"}
                 className="m-2"
                 format="DD-MM-YYYY"
-          
+                disabledDate={(current) => {
+                  let customDate = moment().format("DD-MM-YYYY");
+                  return current && current < moment(customDate, "DD-MM-YYYY");
+                }} 
                 onChange={(value) => {
                   setDate(moment(value).format("DD-MM-YYYY"));
                 }}
