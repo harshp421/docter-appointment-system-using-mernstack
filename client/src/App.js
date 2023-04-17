@@ -25,6 +25,10 @@ import Adminprofile from "./pages/admin/Profile";
 import Single_Doctor from "./pages/Single_Doctor";
 import ThanksPage from "./pages/ThanksPage";
 import Blog from "./pages/Blog";
+import Blog1 from "./pages/Blog1";
+import Blog2 from "./pages/Blog2";
+import Forgotpassword from "./pages/Forgotpassword";
+import Resetpassword from "./pages/Resetpassword";
 
 const App = () => {
   const { loading } = useSelector((state) => state.alerts);
@@ -94,6 +98,28 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            
+            <Route
+              path="/blog/:id1"
+              index
+              element={
+                <ProtectedRoute>
+                  <Blog1 />
+                </ProtectedRoute>
+              }
+            />
+           
+
+           <Route
+              path="/blog/:id2"
+              index
+              element={
+                <ProtectedRoute>
+                  <Blog2/>
+                </ProtectedRoute>
+              }
+            />
+
 
 
             <Route
@@ -186,8 +212,13 @@ const App = () => {
               }
             />
 
-            {/* <Route path='/reset-password' element={<Resetpassword />} />
-              <Route path='/forgot-password' element={<Forgotpassword />} /> */}
+             <Route path='/reset-password/:id' element={ 
+               <PublicRoute>< Resetpassword/></PublicRoute>} />
+              <Route path='/forgot-password' element={ 
+                 <PublicRoute>
+                   <Forgotpassword/>
+                 </PublicRoute>
+             } /> 
 
             <Route
               path="/apply-doctor"

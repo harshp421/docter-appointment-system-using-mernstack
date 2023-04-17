@@ -16,8 +16,8 @@ const Contectmodel = () => {
           <div class="contact-icons">
             <ul class="available-info"><li>
               <i class="fas fa-phone-alt">
-              </i> 090 98763456</li>
-              <li><i class="fas fa-map-marker-alt"></i> 22, South Wales, Newyork</li></ul>
+              </i> 72031155</li>
+              <li><i class="fas fa-map-marker-alt"></i> 605,Suvas scale ,opposite Nikol Police Station ,Nikol</li></ul>
           </div></div>
         <div class="col-lg-6">
           <div class="row">

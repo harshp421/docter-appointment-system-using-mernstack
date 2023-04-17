@@ -71,12 +71,15 @@ const DoctorAppointments = () => {
     {
       title: "Date & Time",
       dataIndex: "date",
+      defaultSortOrder: 'descend',
+     
       render: (text, record) => (
         <span>
           {moment(record.date).format("DD-MM-YYYY")} &nbsp;
           {moment(record.time).format("HH:mm")}
         </span>
       ),
+      
     },
     {
       title: "Is Paid",

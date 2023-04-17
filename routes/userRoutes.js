@@ -17,8 +17,10 @@ const {
   userAppointmentsController,
   braintreeTokenController,
   braintreePaymentController,
-  newsLetter,
   reviewToDoctar,
+  SendEmailToEmail,
+  newsLetter,
+  updatePassword,
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -52,7 +54,10 @@ router.post(
 );
 //get news letter
 
-router.post("/newsletter", authMiddleware, newsLetter);
+ router.post("/newsletter", newsLetter);
+
+ router.post("/changepassword",updatePassword)
+//router.post("/set-password",   SendEmailToEmail);
 
 //GET ALL DOC
 router.get("/getAllDoctors", authMiddleware, getAllDocotrsController);

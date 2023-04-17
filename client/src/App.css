@@ -7,6 +7,12 @@
     background-color: var(--color-00a786);
 }
 
+
+.blogdetail p{
+    font-size: 25px;
+    font-weight: 200;
+}
+
 body {
     font-family: 'Rubik', sans-serif;
 }

@@ -1,10 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Container from '../Component/Container'
 
 const Forgotpassword = () => {
+  const [email,setemail]=useState("")
+
+  const handleemail = async (e) => {
+   e.preventDefault();
+    console.log(email,"email");
+    try {
+      const res = await fetch("/api/v1/user/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+         
+        },
+        body: JSON.stringify({
+          user: email,
+        }),
+      });
+      const data = await res.json();
+      if (data) {
+        alert("date");
+        console.log(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-   <>
+   <>x``
     <Container class1="login-wrapper home-wrapper-2 py-5">
       
       <div className="row">
@@ -16,8 +41,11 @@ const Forgotpassword = () => {
               <p className="text-center mt-1 mb-">
                 We Will swnd you email you change your password
               </p>
-              <form action="" className='d-flex flex-column gap-30'>
-                <div><input type="email" name="email" id="" className='form-control' placeholder='Email' /></div>
+              <form action="" onSubmit={(e)=>handleemail(e)} className='d-flex flex-column gap-30'>
+                <div><input type="email" name="email" id="" 
+                 onChange={(e)=>setemail(e.target.value)}
+                className='form-control' placeholder='Email'
+                 /></div>
               
                 <div>
                   

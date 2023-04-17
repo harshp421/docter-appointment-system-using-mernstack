@@ -41,6 +41,7 @@ const registerController = async (req, res) => {
   }
 };
 
+
 // login callback
 const loginController = async (req, res) => {
   try {
@@ -354,15 +355,18 @@ const braintreePaymentController = async (req, res) => {
 //Payment
 
 const newsLetter = async (req, res) => {
-  const { email } = req.body.user;
-  console.log(req.body.user.email);
+  const email  = req.body.user;
+  console.log(req.body.user,"emial");
   const user = await userModel.findOne({ email: email });
+  console.log(user._id,"id");
   if (!user) {
     res.send("User not found with this email");
   }
   try {
     const resetURL =
-      '<p>Click <a href="http://localhost:5000/api/user/reset-password/">here</a> to reset your password</p>';
+        '<p>Click <a href="http://localhost:3000/reset-password/' +
+        user?._id +
+      '">here</a> to reset your password</p>';
     const data = {
       to: email,
       text: "Hey User",
@@ -371,9 +375,54 @@ const newsLetter = async (req, res) => {
     };
     sendEmail(data);
   } catch (error) {
-    throw new Error(error);
+    console.log(error,"error");
   }
 };
+
+
+
+const updatePassword = async (req, res) => {
+ 
+  const { id} = req.body;
+  var password=req.body.password;
+    console.log(req.body);
+  const user = await  userModel.findById({_id:id});
+  const salt = await bcrypt.genSalt(10);
+  
+  
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, salt);
+    password = hashedPassword;
+    user.password = password;
+    const updatedPassword = await user.save();
+    res.json(updatedPassword);
+  } else {
+    res.json(user);
+  }
+};
+
+// const  SendEmailToEmail = async (req, res) => {
+//   const { email } = req.body.user;
+//   console.log(req.body.user);
+//   const user = await userModel.findOne({ email: email });
+//   if (!user) {
+//     res.send("User not found with this email");
+//   }
+//   try {
+//     const resetURL =
+//       '<p>Click <a href="http://localhost:3000/reset-password/">here</a> to reset your password</p>';
+//     const data = {
+//       to: email,
+//       text: "Hey User",
+//       subject: "Forgot Password Link",
+//       html: resetURL,
+//     };
+//     sendEmail(data);
+//   } catch (error) {
+//     console.log(error,"erroe");
+//     throw new Error(error);
+//   }
+// };
 
 
 
@@ -457,6 +506,7 @@ module.exports = {
   userAppointmentsController,
   braintreeTokenController,
   braintreePaymentController,
-  newsLetter,
   reviewToDoctar,
+  newsLetter ,
+  updatePassword
 };
