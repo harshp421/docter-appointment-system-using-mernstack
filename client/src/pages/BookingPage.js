@@ -8,6 +8,10 @@ import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import {setAppointment} from '../redux/features/appointmentSlice'
 import { toast } from "react-toastify";
 
+
+const minTime = moment('08:00:00', 'HH:mm');
+const maxTime = moment('18:00:00', 'HH:mm');
+
 const BookingPage = () => {
   const { user } = useSelector((state) => state.user);
  
@@ -18,6 +22,22 @@ const BookingPage = () => {
   const [isAvailable, setIsAvailable] = useState(false)
   const dispatch = useDispatch();
   const navigate=useNavigate();
+
+
+
+  
+function disabledMinutes(h) {
+  if (h === minTime.hour()) {
+    return [...Array(minTime.minute()).keys()];
+  } else if (h === maxTime.hour()) {
+    return [...Array(60 - maxTime.minute()).keys()].map(i => i + maxTime.minute());
+  }
+  return [];
+}
+
+function disabledHours() {
+  return [...Array(24).keys()].filter(h => h < minTime.hour() || h > maxTime.hour());
+}
 
   // login user data
 
@@ -160,6 +180,7 @@ const BookingPage = () => {
                 aria-required={"true"}
                 className="m-2"
                 format="DD-MM-YYYY"
+                 
                 disabledDate={(current) => {
                   let customDate = moment().format("DD-MM-YYYY");
                   return current && current < moment(customDate, "DD-MM-YYYY");
@@ -173,6 +194,8 @@ const BookingPage = () => {
                 aria-required={"true"}
                 format="HH:mm"
                 className="mt-3"
+                disabledHours={disabledHours}
+                disabledMinutes={disabledMinutes}
                 
                 onChange={(value) => { 
                   setTime(moment(value).format("HH:mm"));

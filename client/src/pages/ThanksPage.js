@@ -91,7 +91,7 @@ const ThanksPage = () => {
 
   return (
    <>
-<section class="section confirmation home-wrapper-2 w-100 ">
+<section class="section confirmation home-wrapper-2 w-100  my-5 " style={{height:"100vh"}}>
 
   <div class="container conform-box">
     <div class="row justify-content-center">
@@ -106,9 +106,9 @@ const ThanksPage = () => {
    
        {!clientToken?(""):(
         <>
-         <div className='col-4 pb-3'>
+         <div className=' pb-5  row justify-content-center'>
        
-       <DropIn 
+          <DropIn
               options={{
                authorization: clientToken,
                  paypal:{
