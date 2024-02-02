@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Container from '../Component/Container'
 import { useNavigate, useParams } from 'react-router-dom'
-import { set } from 'mongoose';
+
 const Resetpassword = () => {
 
     var id;
